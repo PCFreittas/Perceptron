@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * Multi Dimension Random Points
  * 
- * @version 0.1
+ * @version 0.2
  * @author pedro
  * "A simplicidade é o último grau de sofisticação"(Leonardo da Vinci)
  */
