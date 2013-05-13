@@ -15,8 +15,7 @@ public class MDRP{
      * @param dVetPC Dimensão dos PC
      * @param qtdePC Quantidade de PC
      */
-    
-    
+  
     // Pontos Centrais
     private int            dVetPC;
     private int            qtdePC;
@@ -97,6 +96,5 @@ public class MDRP{
             }
             System.out.println("}");
         }
-    }
-    
+    }   
 }
