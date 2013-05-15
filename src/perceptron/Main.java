@@ -61,7 +61,7 @@ public final class Main extends javax.swing.JFrame {
     
     private void Grafico(){
     
-        CategoryDataset cds;
+        //CategoryDataset cds;
         String titulo = "Problema 2D";
         String eixox = "X";
         String eixoy = "Y";
@@ -69,9 +69,18 @@ public final class Main extends javax.swing.JFrame {
         boolean tooltips = false;
         boolean urls = false;
         
-        JFreeChart graf = ChartFactory.createScatterPlot(titulo, eixox, eixoy, datGraf(), PlotOrientation.HORIZONTAL, legenda, tooltips, urls);
-        
+        JFreeChart graf = ChartFactory.createXYLineChart(
+                titulo,
+                eixox,
+                eixoy,
+                datGraf(),
+                PlotOrientation.HORIZONTAL,
+                legenda,
+                tooltips,
+                urls);
+                
         XYPlot xyPlot = (XYPlot) graf.getPlot();
+        
         
         xyPlot.setDomainCrosshairVisible(true);
         xyPlot.setRangeCrosshairVisible(true);
@@ -218,7 +227,7 @@ public final class Main extends javax.swing.JFrame {
             
             ArrayList<String[]> b = new  ArrayList();
             String      a;
-            String[]    c = null;
+            String[]    c;
             int nroY, nroX;
             
             arquivo = new BufferedReader(new FileReader("/home/pedro/pontos.txt"));
