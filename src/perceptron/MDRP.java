@@ -1,6 +1,13 @@
 package perceptron;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Multi Dimension Random Points
@@ -35,17 +42,61 @@ public class MDRP{
     * @param qtdePA Quantos PA devem ser criados.
     * @return null
     */
-    public void setConfig(double[][] matrPC, double raioPC, int qtdePA){
-     
-        this.matrPC = matrPC;
+    
+    public void MDRP(){
+        upArqPC();
         this.dVetPC = matrPC[0].length;
         this.qtdePC = matrPC.length;
+    }
+    
+    public void setConfig(double raioPC, int qtdePA){
         this.raioPC = raioPC;
         this.qtdePA = qtdePA;
         
         // Cria a Matriz de Pontos Aleatórios
         this.matrPA = new double[qtdePC][qtdePA][dVetPC];
     }
+    private void upArqPC(){    
+        try {
+            BufferedReader arquivo;
+            
+            ArrayList<String[]> b = new  ArrayList();
+            String      a;
+            String[]    c= null;
+            int nroY, nroX;
+            
+            arquivo = new BufferedReader(new FileReader("/home/pedro/pontos.txt"));
+        
+            while(arquivo.ready()){
+             
+                a  = arquivo.readLine();
+                c  = a.split(",");
+                b.add(c);
+            }
+            nroX = c.length;
+            nroY = b.size();
+            
+            System.out.println("" + nroX);
+            
+            matrPC = new double[nroY][nroX];
+                
+            for(int c1=0; c1< nroY; c1++){
+                c = b.get(c1);
+                for(int c2=0; c2< nroX ; c2++){
+                    matrPC[c1][c2] =  Double.parseDouble(c[c2]);
+                }
+            }
+            
+            arquivo.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }  
+    }
+    
+    
+    
     /**
     * Inicializa a construção dos vetores de pontos multidimencionais
     * @return null 
