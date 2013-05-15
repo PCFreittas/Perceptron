@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package perceptron;
 
 import java.awt.Color;
@@ -18,15 +14,12 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.DefaultXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.category.CategoryDataset;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-
-
-
-
 
 /**
  *
@@ -34,8 +27,10 @@ import org.jfree.data.xy.XYSeriesCollection;
  */
 public final class Main extends javax.swing.JFrame {
     
+    // Instância Classe MDRP
     MDRP iMDRP = new MDRP();
-    private double pontUP[][];
+    // Variáveis Locais
+    private double matrizPC[][];
 
     /**
      * Creates new form Main
@@ -43,12 +38,8 @@ public final class Main extends javax.swing.JFrame {
     public Main() {
         initComponents();
         tela_Centro();
-        String t = "Sistema pronto. \nAdicione os pontos";
-        jTextPane1.setText(t);
+        jTextPane1.setText("Sistema pronto !");
 
-        
-        
-        
     }
     public void tela_Centro(){
         
@@ -80,10 +71,22 @@ public final class Main extends javax.swing.JFrame {
                 urls);
                 
         XYPlot xyPlot = (XYPlot) graf.getPlot();
+//        xyPlot.setDomainCrosshairVisible(true);
+//        xyPlot.setRangeCrosshairVisible(true);
+
+        XYLineAndShapeRenderer render = new DefaultXYItemRenderer();
+        //Pontos Centrais
+        render.setSeriesLinesVisible(0, false);
+        render.setSeriesShapesVisible(0, true);
+        //Pontos Aleatórios
+        render.setSeriesLinesVisible(1, false);
+        render.setSeriesShapesVisible(1, true);
+        //Reta
+        render.setSeriesLinesVisible(2, true);
+        render.setSeriesShapesVisible(2, false);
+  
+        xyPlot.setRenderer(render);
         
-        
-        xyPlot.setDomainCrosshairVisible(true);
-        xyPlot.setRangeCrosshairVisible(true);
         XYItemRenderer renderer = xyPlot.getRenderer();
         renderer.setSeriesPaint(0, Color.blue);
         NumberAxis domain = (NumberAxis) xyPlot.getDomainAxis();
@@ -101,24 +104,36 @@ public final class Main extends javax.swing.JFrame {
     }
     
     private XYDataset datGraf(){
-        XYSeriesCollection xyDatCol = new XYSeriesCollection();
-        XYSeries randPts = new XYSeries("PC");
-        XYSeries added   = new XYSeries("Added");
+        /* Dados do Gráfico
+         * 
+         */
         
-        for(int c1=0; c1< pontUP.length; c1++){
-            for(int c2=0; c2< pontUP[c1].length ; c2++){
-                randPts.add(pontUP[c1][0],pontUP[c1][1]);
+        XYSeriesCollection xyDatCol = new XYSeriesCollection();
+        XYSeries graficPC = new XYSeries("Pts Centrais");
+        XYSeries graficPA = new XYSeries("Pts Aleatórios");
+        XYSeries graficRT = new XYSeries("Reta");
+        
+        // Insere os dados nas váriáveis correspondentes        
+        
+        // Pontos Centrais
+        for(int c1=0; c1< matrizPC.length; c1++){
+            for(int c2=0; c2< matrizPC[c1].length ; c2++){
+                graficPC.add(matrizPC[c1][0],matrizPC[c1][1]);
             }
         }
-        
+        // Pontos Aleatórios
         for(int c1=0; c1< (iMDRP.matrPA).length; c1++){
             for(int c2=0; c2< (iMDRP.matrPA[c1]).length; c2++){
-            added.add(iMDRP.matrPA[c1][c2][0],iMDRP.matrPA[c1][c2][1]);
+            graficPA.add(iMDRP.matrPA[c1][c2][0],iMDRP.matrPA[c1][c2][1]);
             }
         }
+        // Reta
+        graficRT.add(0,0);
+        graficRT.add(10,100);
         
-        xyDatCol.addSeries(randPts);
-        xyDatCol.addSeries(added);
+        xyDatCol.addSeries(graficPC);
+        xyDatCol.addSeries(graficPA);
+        xyDatCol.addSeries(graficRT);
         return xyDatCol;
         
     }
@@ -227,7 +242,7 @@ public final class Main extends javax.swing.JFrame {
             
             ArrayList<String[]> b = new  ArrayList();
             String      a;
-            String[]    c;
+            String[]    c= null;
             int nroY, nroX;
             
             arquivo = new BufferedReader(new FileReader("/home/pedro/pontos.txt"));
@@ -243,12 +258,12 @@ public final class Main extends javax.swing.JFrame {
             
             System.out.println("" + nroX);
             
-            pontUP = new double[nroY][nroX];
+            matrizPC = new double[nroY][nroX];
                 
             for(int c1=0; c1< nroY; c1++){
                 c = b.get(c1);
                 for(int c2=0; c2< nroX ; c2++){
-                    pontUP[c1][c2] =  Double.parseDouble(c[c2]);
+                    matrizPC[c1][c2] =  Double.parseDouble(c[c2]);
                 }
             }
             
@@ -264,11 +279,11 @@ public final class Main extends javax.swing.JFrame {
         jButton2.setEnabled(true);
         
         
-//        for(int c1=0; c1< pontUP.length; c1++){
+//        for(int c1=0; c1< matrizPC.length; c1++){
 //            System.out.print("{");
-//            for(int c2=0; c2< pontUP[c1].length ; c2++){
-//                System.out.print(pontUP[c1][c2]);
-//                if(c2!=(pontUP[c1].length)-1){
+//            for(int c2=0; c2< matrizPC[c1].length ; c2++){
+//                System.out.print(matrizPC[c1][c2]);
+//                if(c2!=(matrizPC[c1].length)-1){
 //                    System.out.print(", ");
 //                }else{
 //                    System.out.println("}");
@@ -285,8 +300,8 @@ public final class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if(pontUP.length>0){
-            iMDRP.setConfig(this.pontUP, 10, 50);
+        if(matrizPC.length>0){
+            iMDRP.setConfig(this.matrizPC, 10, 50);
             iMDRP.geraMatr();
         }
         else{
