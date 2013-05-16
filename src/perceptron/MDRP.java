@@ -26,29 +26,34 @@ public class MDRP{
     // Pontos Centrais
     private int            dVetPC;
     private int            qtdePC;
-    private double         raioPC; // Tamanho do Raio em volta ao(s) pontos centrais
+    private double         raioPC;          // Tamanho do Raio em volta ao(s) pontos centrais
     public double[][]      matrPC;
+    public boolean         onLnPC = false;  // matrPC carregada (true/false);
     // Pontos Aleatórios
     private int            qtdePA; // Numero de pontos a serem criados
     public double[][][]    matrPA; // Pontos Gerados (vetor)
     
+    
+    
+    
+    
+    
+    
+    public void iniciar(){
+        upArqPC();
+        this.dVetPC = matrPC[0].length;
+        this.qtdePC = matrPC.length;
+    }
+ 
     /**
     * Seta as variveis  de configuração
     * PC (Pontos Centrais)
     * PA (Pontos Aleatórios)
     * 
-    * @param matrPC Conjunto dos PC;
     * @param raioPC Raio (em volta dos PC) que serão cridos os PA;
     * @param qtdePA Quantos PA devem ser criados.
     * @return null
     */
-    
-    public void MDRP(){
-        upArqPC();
-        this.dVetPC = matrPC[0].length;
-        this.qtdePC = matrPC.length;
-    }
-    
     public void setConfig(double raioPC, int qtdePA){
         this.raioPC = raioPC;
         this.qtdePA = qtdePA;
@@ -76,8 +81,6 @@ public class MDRP{
             nroX = c.length;
             nroY = b.size();
             
-            System.out.println("" + nroX);
-            
             matrPC = new double[nroY][nroX];
                 
             for(int c1=0; c1< nroY; c1++){
@@ -92,7 +95,10 @@ public class MDRP{
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }  
+        }
+        if(matrPC.length>0){
+            onLnPC = true;
+        }
     }
     
     

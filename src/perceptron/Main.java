@@ -1,13 +1,6 @@
 package perceptron;
 
 import java.awt.Color;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -29,11 +22,7 @@ public final class Main extends javax.swing.JFrame {
     
     // Instância Classe MDRP
     MDRP iMDRP = new MDRP();
-    // Variáveis Locais
-    private double matrizPC[][];
-    private double minXReta;
-    private double maxXReta;
-
+    
     /**
      * Creates new form Main
      */
@@ -118,14 +107,18 @@ public final class Main extends javax.swing.JFrame {
         // Insere os dados nas váriáveis correspondentes        
         
         // Pontos Centrais
-        for(int c1=0; c1< matrizPC.length; c1++){
-            for(int c2=0; c2< matrizPC[c1].length ; c2++){
-                graficPC.add(matrizPC[c1][0],matrizPC[c1][1]);
+        int qntPC = iMDRP.matrPC.length;
+        int dimPC = iMDRP.matrPC[0].length;
+        for(int c1=0; c1< qntPC; c1++){
+            for(int c2=0; c2< dimPC ; c2++){
+                graficPC.add(iMDRP.matrPC[c1][0],iMDRP.matrPC[c1][1]);
             }
         }
         // Pontos Aleatórios
-        for(int c1=0; c1< (iMDRP.matrPA).length; c1++){
-            for(int c2=0; c2< (iMDRP.matrPA[c1]).length; c2++){
+        int qntPA = iMDRP.matrPA.length;
+        int dimPA = iMDRP.matrPA[0].length;
+        for(int c1=0; c1< qntPA; c1++){
+            for(int c2=0; c2< dimPA; c2++){
             graficPA.add(iMDRP.matrPA[c1][c2][0],iMDRP.matrPA[c1][c2][1]);
             }
         }
@@ -214,7 +207,8 @@ public final class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if(iMDRP.matrPC.length>0){
+        iMDRP.iniciar();
+        if(iMDRP.onLnPC){
             iMDRP.setConfig(10, 50);
             iMDRP.geraMatr();
             Grafico();
@@ -240,13 +234,7 @@ public final class Main extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
