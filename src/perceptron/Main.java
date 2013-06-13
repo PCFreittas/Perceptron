@@ -1,32 +1,18 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package perceptron;
 
 import java.awt.Color;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.DefaultXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.category.CategoryDataset;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-
-
-
-
 
 /**
  *
@@ -34,21 +20,17 @@ import org.jfree.data.xy.XYSeriesCollection;
  */
 public final class Main extends javax.swing.JFrame {
     
+    // Instância Classe MDRP
     MDRP iMDRP = new MDRP();
-    private double pontUP[][];
-
+    
     /**
      * Creates new form Main
      */
     public Main() {
         initComponents();
         tela_Centro();
-        String t = "Sistema pronto. \nAdicione os pontos";
-        jTextPane1.setText(t);
+        jTextPane1.setText("Sistema pronto !");
 
-        
-        
-        
     }
     public void tela_Centro(){
         
@@ -61,7 +43,7 @@ public final class Main extends javax.swing.JFrame {
     
     private void Grafico(){
     
-        CategoryDataset cds;
+        //CategoryDataset cds;
         String titulo = "Problema 2D";
         String eixox = "X";
         String eixoy = "Y";
@@ -69,12 +51,33 @@ public final class Main extends javax.swing.JFrame {
         boolean tooltips = false;
         boolean urls = false;
         
-        JFreeChart graf = ChartFactory.createScatterPlot(titulo, eixox, eixoy, datGraf(), PlotOrientation.HORIZONTAL, legenda, tooltips, urls);
-        
+        JFreeChart graf = ChartFactory.createXYLineChart(
+                titulo,
+                eixox,
+                eixoy,
+                datGraf(),
+                PlotOrientation.HORIZONTAL,
+                legenda,
+                tooltips,
+                urls);
+                
         XYPlot xyPlot = (XYPlot) graf.getPlot();
+//        xyPlot.setDomainCrosshairVisible(true);
+//        xyPlot.setRangeCrosshairVisible(true);
+
+        XYLineAndShapeRenderer render = new DefaultXYItemRenderer();
+        //Pontos Centrais
+        render.setSeriesLinesVisible(0, false);
+        render.setSeriesShapesVisible(0, true);
+        //Pontos Aleatórios
+        render.setSeriesLinesVisible(1, false);
+        render.setSeriesShapesVisible(1, true);
+        //Reta
+        render.setSeriesLinesVisible(2, true);
+        render.setSeriesShapesVisible(2, false);
+  
+        xyPlot.setRenderer(render);
         
-        xyPlot.setDomainCrosshairVisible(true);
-        xyPlot.setRangeCrosshairVisible(true);
         XYItemRenderer renderer = xyPlot.getRenderer();
         renderer.setSeriesPaint(0, Color.blue);
         NumberAxis domain = (NumberAxis) xyPlot.getDomainAxis();
@@ -92,24 +95,40 @@ public final class Main extends javax.swing.JFrame {
     }
     
     private XYDataset datGraf(){
+        /* Dados do Gráfico
+         * 
+         */
+        
         XYSeriesCollection xyDatCol = new XYSeriesCollection();
-        XYSeries randPts = new XYSeries("PC");
-        XYSeries added   = new XYSeries("Added");
+        XYSeries graficPC = new XYSeries("Pts Centrais");
+        XYSeries graficPA = new XYSeries("Pts Aleatórios");
+        XYSeries graficRT = new XYSeries("Reta");
         
-        for(int c1=0; c1< pontUP.length; c1++){
-            for(int c2=0; c2< pontUP[c1].length ; c2++){
-                randPts.add(pontUP[c1][0],pontUP[c1][1]);
+        // Insere os dados nas váriáveis correspondentes        
+        
+        // Pontos Centrais
+        int qntPC = iMDRP.matrPC.length;
+        int dimPC = iMDRP.matrPC[0].length;
+        for(int c1=0; c1< qntPC; c1++){
+            for(int c2=0; c2< dimPC ; c2++){
+                graficPC.add(iMDRP.matrPC[c1][0],iMDRP.matrPC[c1][1]);
             }
         }
-        
-        for(int c1=0; c1< (iMDRP.matrPA).length; c1++){
-            for(int c2=0; c2< (iMDRP.matrPA[c1]).length; c2++){
-            added.add(iMDRP.matrPA[c1][c2][0],iMDRP.matrPA[c1][c2][1]);
+        // Pontos Aleatórios
+        int qntPA = iMDRP.matrPA.length;
+        int dimPA = iMDRP.matrPA[0].length;
+        for(int c1=0; c1< qntPA; c1++){
+            for(int c2=0; c2< dimPA; c2++){
+            graficPA.add(iMDRP.matrPA[c1][c2][0],iMDRP.matrPA[c1][c2][1]);
             }
         }
+        // Reta
+        graficRT.add(0,0);
+        graficRT.add(10,100);
         
-        xyDatCol.addSeries(randPts);
-        xyDatCol.addSeries(added);
+        xyDatCol.addSeries(graficPC);
+        xyDatCol.addSeries(graficPA);
+        xyDatCol.addSeries(graficRT);
         return xyDatCol;
         
     }
@@ -127,8 +146,6 @@ public final class Main extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -144,31 +161,16 @@ public final class Main extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 610, Short.MAX_VALUE)
+            .add(0, 0, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 406, Short.MAX_VALUE)
+            .add(0, 394, Short.MAX_VALUE)
         );
 
         jScrollPane4.setViewportView(jTextPane1);
 
-        jButton1.setText("Carregar Pontos");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("Gera Gráfico 2D");
-        jButton2.setEnabled(false);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText("Gerar Pontos");
+        jButton3.setText("Start");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -181,104 +183,35 @@ public final class Main extends javax.swing.JFrame {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                    .add(jScrollPane4)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                            .add(jButton1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
-                            .add(jButton2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(jButton3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .add(42, 42, 42)
-                        .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
+                        .add(18, 18, 18)
+                        .add(jButton3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 134, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(jButton1)
-                        .add(18, 18, 18)
-                        .add(jButton3)
-                        .add(18, 18, 18)
-                        .add(jButton2))
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 164, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(18, 18, 18)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 164, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButton3))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            BufferedReader arquivo;
-            
-            ArrayList<String[]> b = new  ArrayList();
-            String      a;
-            String[]    c = null;
-            int nroY, nroX;
-            
-            arquivo = new BufferedReader(new FileReader("/home/pedro/pontos.txt"));
-        
-            while(arquivo.ready()){
-             
-                a  = arquivo.readLine();
-                c  = a.split(",");
-                b.add(c);
-            }
-            nroX = c.length;
-            nroY = b.size();
-            
-            System.out.println("" + nroX);
-            
-            pontUP = new double[nroY][nroX];
-                
-            for(int c1=0; c1< nroY; c1++){
-                c = b.get(c1);
-                for(int c2=0; c2< nroX ; c2++){
-                    pontUP[c1][c2] =  Double.parseDouble(c[c2]);
-                }
-            }
-            
-            arquivo.close();
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-                    
-        jTextPane1.setText("Dados carregados!!   ");
-        
-        jButton2.setEnabled(true);
-        
-        
-//        for(int c1=0; c1< pontUP.length; c1++){
-//            System.out.print("{");
-//            for(int c2=0; c2< pontUP[c1].length ; c2++){
-//                System.out.print(pontUP[c1][c2]);
-//                if(c2!=(pontUP[c1].length)-1){
-//                    System.out.print(", ");
-//                }else{
-//                    System.out.println("}");
-//                }
-//            }
-//        }
-        
-
-
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        Grafico();
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if(pontUP.length>0){
-            iMDRP.setConfig(this.pontUP, 10, 50);
+        iMDRP.iniciar();
+        if(iMDRP.onLnPC){
+            iMDRP.setConfig(10, 50);
             iMDRP.geraMatr();
+            Grafico();
         }
         else{
             System.out.println("Sem dados");
@@ -301,13 +234,7 @@ public final class Main extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
@@ -324,8 +251,6 @@ public final class Main extends javax.swing.JFrame {
         
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane4;
